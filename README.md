@@ -1,56 +1,114 @@
 # Locating atoms in noisy images
 
-A guided Python project exploring a materials measurement question: how does image noise affect our estimate of an atom's position?
+A complete Python project comparing four ways of measuring the position of a synthetic bright spot: brightest pixel, smoothed brightest pixel, a full-frame clipped centroid and a Gaussian fit.
 
-We will start with synthetic images so that we know the true position and can check our measurements. Our first atom model will be a Gaussian bright spot. It is a simplified model, not a full simulation of electron microscopy.
+The experiment checks estimates against known centres across repeated noise realisations, spot widths and positions. It saves every trial, summary statistics, labelled figures and a results report. The signal is a simplified Gaussian, not a full electron-microscopy simulation.
 
-## Start here
+## Two branches, two working folders
 
-Open [the first lesson](lessons/01-images-as-arrays.md). The starter script runs as it stands and produces a blank image. Your first task is to change a few pixels and explain their positions.
+This folder is the `codex/complete-project` branch. The parent project folder remains on `codex/learning`, containing your guided exercise. A Git worktree lets both versions stay open at once without switching either folder's branch.
 
-From this project's folder, run:
+- Learning folder: `/Users/peikaiw/Documents/ChatGPT/Uni Side Project`
+- Complete folder: `/Users/peikaiw/Documents/ChatGPT/Uni Side Project/.worktrees/complete-project`
+
+In Cursor, use **File > Open Folder** and paste the complete folder path to open the finished project in another window. The `.worktrees` folder begins with a dot, so it may be hidden in Finder. Opening its exact path still works.
+
+Check the branch in either terminal with `git branch --show-current`. Do not switch either folder to the other branch: each branch already has its own working folder. Edits in one folder do not update the other. No remote repository is required and nothing has been published.
+
+## Run the project
+
+In Cursor's terminal, enter these commands. They belong in the terminal, not inside a Python file:
 
 ```sh
-python3 first_image.py
+cd "/Users/peikaiw/Documents/ChatGPT/Uni Side Project/.worktrees/complete-project"
+python3 run_project.py
 ```
 
-Open `outputs/first_image.png` to see the result. Running the script again replaces that file. Copy any results you want to keep before rerunning it.
+The default run uses 100 trials for each of 45 conditions: three spot widths, three positions and five Gaussian noise levels. That produces 4,500 images and 18,000 method results. It writes to `outputs/experiment/` relative to the terminal's current folder.
 
-NumPy and Matplotlib were available in the Python environment when this project was created. If your editor uses a different environment and reports a missing module, use a local virtual environment:
+Open `outputs/experiment/report.md` for the results. In Cursor, open the Markdown preview to view its figures. There is no separate plot window.
+
+For a quick first run in a separate output folder:
+
+```sh
+python3 run_project.py --trials 10 --sigmas 2 --noise-levels 0 0.1 --output outputs/quick
+```
+
+For both Gaussian and Poisson noise:
+
+```sh
+python3 run_project.py --noise-models gaussian poisson --output outputs/both-noise-models
+```
+
+For a larger run after you understand the smaller one:
+
+```sh
+python3 run_project.py --trials 500 --seed 2027 --output outputs/larger-run
+```
+
+Use `python3 run_project.py --help` to see parameters. Rerunning replaces generated files with matching names in the chosen output folder. Use a different `--output` folder to keep earlier runs. Files from a previous configuration with other names may remain, so consult the current report and metadata for the run's contents.
+
+## Environment
+
+The existing Python environment had the dependencies when the project was built. For a separate environment, or if you see `ModuleNotFoundError`:
 
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
-python first_image.py
+python -m pip install -r requirements-dev.txt
+python run_project.py
 ```
 
-Tell your editor to use `.venv/bin/python` if you create that environment. You do not need to install anything before trying the starter with the existing environment.
+Choose `.venv/bin/python` as your editor's interpreter if you create that environment. `requirements-dev.txt` includes pytest for running checks; `requirements.txt` alone is sufficient for the experiment. Direct dependency versions were checked with Python 3.14.2.
 
-## How we will work
+If Matplotlib prints a cache-permission warning in a restricted terminal, the figure can still be generated. You can give it a local cache directory:
 
-For each step, predict what the code will do, write or change a small part, run it, and explain what happened. Keep brief notes in [research_notes.md](research_notes.md). Bring back your code, a result or an error message when you want help.
+```sh
+MPLCONFIGDIR="$PWD/.cache/matplotlib" XDG_CACHE_HOME="$PWD/.cache" python3 run_project.py
+```
 
-Ask for a hint when you want one. We will build the next step around what you understand, rather than completing every function in advance.
+## Outputs
 
-## Project milestones
+- `report.md`: results, figures, assumptions and interpretation.
+- `example.png`: clean, noisy and filtered images using the same intensity scale.
+- `gaussian_error_curves.png`: position RMSE versus Gaussian noise level for each width and position.
+- `poisson_error_curves.png`: corresponding counting-noise results, when requested.
+- `error_cloud.png`: horizontal and vertical errors for a preselected off-centre condition.
+- `trials.csv`: all individual estimates, including failed measurements.
+- `summary.csv` and `summary.json`: per-condition errors, bias, failure rates and bootstrap intervals.
+- `metadata.json`: parameters, random seed, dependency versions and Git state.
 
-| Milestone | Question | Evidence to keep |
-| --- | --- | --- |
-| Images as arrays | How do row and column indices relate to image position? | An image with deliberately placed bright pixels |
-| A synthetic atom | How can we represent a bright spot with a continuous centre? | A Gaussian image and an explanation of its parameters |
-| Noise | How does changing the noise level change the image? | Comparable images using recorded random seeds |
-| Position measurement | How do the brightest-pixel and centroid methods behave? | Position estimates and errors against known centres |
-| Repeated experiments | How much does the error vary between noise realisations? | Error distributions across independent trials |
-| Method evaluation | When does each method become biased or unreliable? | Comparisons across positions, noise levels and spot widths |
+Generated outputs are ignored by Git. They are reproducible artefacts of the source; this keeps large trial files and changing timestamps out of commits.
 
-Begin with a laptop-sized problem and NumPy. Consider filtering or machine learning after the measurement and evaluation work.
+## Understand the project
 
-## Scientific decisions we will revisit
+Read [the explanation](docs/explanation.md) alongside the code. It starts with your array-indexing exercise and develops the Gaussian formula, noise models, estimators and error statistics. It includes questions to work through at your own pace.
 
-- A grid of pixels samples a continuous signal. A centre between pixels is worth testing once the basic image works.
-- Gaussian additive noise is a useful first exercise. Counting noise and background require their own assumptions.
-- A centroid depends on the chosen image region and treatment of background. It is not guaranteed to beat the brightest pixel.
-- Errors measured on synthetic images describe that simulation. Experimental microscopy will require further validation.
+Begin by predicting the error of the brightest-pixel method for a noise-free spot centred at (16.35, 15.65). Then compare your answer with the zero-noise rows in `summary.csv`.
 
-Keep coursework and examination preparation in your schedule. Progress means being able to explain your results; there is no fixed weekly deadline.
+The model fit has a favourable test because it fits the same type of Gaussian used to generate the signal. The centroid has a known background but uses the full frame and clips negative weights, which can introduce bias. These assumptions are part of the comparison and are explained in the report. Results must not be presented as a general ranking of localisation methods or as validation on experimental microscopy.
+
+## Verification
+
+```sh
+python3 -m pytest -q
+```
+
+The checks cover coordinate order, recovery of a noise-free fractional centre, pixel quantisation error, noise statistics, reproducibility, failure accounting, RMSE calculations, input validation and a small complete command-line run that produces CSV, JSON and PNG outputs.
+
+## Project layout
+
+```text
+run_project.py                 Command-line entry point
+atom_localisation/
+    model.py                   Signal and noise
+    estimators.py              Position measurement
+    experiment.py              Trials and summary calculations
+    plots.py                   Figures
+    report.py                  Data exports and report
+docs/explanation.md            Mathematical and code walkthrough
+tests/                         Scientific and end-to-end checks
+first_image.py                 Your original two-pixel exercise
+lessons/                       Original guided lesson
+research_notes.md              Original learning notes
+```
