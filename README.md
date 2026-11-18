@@ -8,10 +8,10 @@ The experiment checks estimates against known centres across repeated noise real
 
 See the [example results report](examples/report.md) for a run using 7,200 simulated images, or read the [mathematical walkthrough](docs/explanation.md).
 
-## Branches
+## Project versions
 
-- `codex/complete-project` contains the complete implementation and is the default branch.
-- `codex/learning` preserves the initial guided exercises as a separate place to practise.
+- `codex/complete-project` contains the complete implementation and is the public repository's default branch.
+- A separate `codex/learning` branch preserves the initial guided exercises locally. It is not published to this repository.
 
 The original local setup uses two Git worktrees so that both branches can remain open at once. In that setup the learning folder contains the complete worktree at `.worktrees/complete-project`; check the branch in either terminal with `git branch --show-current`. Each folder already has its own branch.
 
