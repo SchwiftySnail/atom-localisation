@@ -1,0 +1,58 @@
+{
+  "created_utc": "2026-11-18T11:43:36.207165+00:00",
+  "project_version": "1.0.0",
+  "python": "3.14.2",
+  "numpy": "2.4.4",
+  "scipy": "1.17.1",
+  "matplotlib": "3.10.9",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "git_commit": "13f4481e7802959ef7245cb0f728bae8e872825b",
+  "git_branch": "codex/complete-project",
+  "git_dirty": false,
+  "configuration": {
+    "trials": 100,
+    "seed": 2027,
+    "size": 33,
+    "amplitude": 1.0,
+    "background": 0.05,
+    "sigmas": [
+      1,
+      2,
+      3
+    ],
+    "noise_models": [
+      "gaussian",
+      "poisson"
+    ],
+    "noise_levels": [
+      0,
+      0.02,
+      0.05,
+      0.1,
+      0.2
+    ],
+    "count_scales": [
+      10,
+      50,
+      200
+    ],
+    "smoothing_sigma": 1.0,
+    "bootstrap_samples": 1000,
+    "positions_xy": {
+      "integer": [
+        16.0,
+        16.0
+      ],
+      "fractional": [
+        16.35,
+        15.65
+      ],
+      "off_centre": [
+        12.35,
+        19.65
+      ]
+    }
+  },
+  "randomness": "SeedSequence(seed).spawn(scenarios); shared noisy frame across methods. Separate streams [seed, 101] for bootstrap and [seed, 202] for example.",
+  "note": "Seeded results are reproducible in the recorded environment; numerical and random implementations can change across dependency versions."
+}

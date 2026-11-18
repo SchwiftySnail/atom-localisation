@@ -4,25 +4,31 @@ A complete Python project comparing four ways of measuring the position of a syn
 
 The experiment checks estimates against known centres across repeated noise realisations, spot widths and positions. It saves every trial, summary statistics, labelled figures and a results report. The signal is a simplified Gaussian, not a full electron-microscopy simulation.
 
-## Two branches, two working folders
+![Clean, noisy and filtered synthetic spot](examples/example.png)
 
-This folder is the `codex/complete-project` branch. The parent project folder remains on `codex/learning`, containing your guided exercise. A Git worktree lets both versions stay open at once without switching either folder's branch.
+See the [example results report](examples/report.md) for a run using 7,200 simulated images, or read the [mathematical walkthrough](docs/explanation.md).
 
-- Learning folder: `/Users/peikaiw/Documents/ChatGPT/Uni Side Project`
-- Complete folder: `/Users/peikaiw/Documents/ChatGPT/Uni Side Project/.worktrees/complete-project`
+## Branches
 
-In Cursor, use **File > Open Folder** and paste the complete folder path to open the finished project in another window. The `.worktrees` folder begins with a dot, so it may be hidden in Finder. Opening its exact path still works.
+- `codex/complete-project` contains the complete implementation and is the default branch.
+- `codex/learning` preserves the initial guided exercises as a separate place to practise.
 
-Check the branch in either terminal with `git branch --show-current`. Do not switch either folder to the other branch: each branch already has its own working folder. Edits in one folder do not update the other. No remote repository is required and nothing has been published.
+The original local setup uses two Git worktrees so that both branches can remain open at once. In that setup the learning folder contains the complete worktree at `.worktrees/complete-project`; check the branch in either terminal with `git branch --show-current`. Each folder already has its own branch.
 
 ## Run the project
 
-In Cursor's terminal, enter these commands. They belong in the terminal, not inside a Python file:
+Clone the repository, then create an environment and install the dependencies. These commands are for a macOS or Linux terminal:
 
 ```sh
-cd "/Users/peikaiw/Documents/ChatGPT/Uni Side Project/.worktrees/complete-project"
-python3 run_project.py
+git clone https://github.com/SchwiftySnail/atom-localisation.git
+cd atom-localisation
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python run_project.py
 ```
+
+If the project is already open locally, run `python3 run_project.py` from the complete project's folder. Terminal commands belong in the terminal, not inside a Python file.
 
 The default run uses 100 trials for each of 45 conditions: three spot widths, three positions and five Gaussian noise levels. That produces 4,500 images and 18,000 method results. It writes to `outputs/experiment/` relative to the terminal's current folder.
 
@@ -78,7 +84,7 @@ MPLCONFIGDIR="$PWD/.cache/matplotlib" XDG_CACHE_HOME="$PWD/.cache" python3 run_p
 - `summary.csv` and `summary.json`: per-condition errors, bias, failure rates and bootstrap intervals.
 - `metadata.json`: parameters, random seed, dependency versions and Git state.
 
-Generated outputs are ignored by Git. They are reproducible artefacts of the source; this keeps large trial files and changing timestamps out of commits.
+Generated outputs are ignored by Git. They are reproducible artefacts of the source; this keeps large trial files and changing timestamps out of commits. A small recorded run is included in [examples](examples/README.md) so that the figures and summary can be read without running Python.
 
 ## Understand the project
 

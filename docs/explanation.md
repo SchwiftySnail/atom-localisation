@@ -10,7 +10,9 @@ This Gaussian spot is a teaching model for localisation. It is not a full electr
 
 In your first exercise, `image[20, 40] = 1.0` changed one array entry. A Gaussian assigns an intensity to every pixel according to its distance from a centre:
 
-$$I(x,y)=b+A\exp\left[-\frac{(x-x_0)^2+(y-y_0)^2}{2\sigma^2}\right].$$
+$$
+I(x,y)=b+A\exp\left[-\frac{(x-x_0)^2+(y-y_0)^2}{2\sigma^2}\right].
+$$
 
 Here x0 and y0 are the centre coordinates, in pixels. A is the height above a uniform background b, both in arbitrary intensity units. Sigma is the spot width in pixels.
 
@@ -50,12 +52,16 @@ The smoothing width is a chosen analysis parameter. It is not taken from the tru
 
 Subtract the known background and set negative weights to zero:
 
-$$w_{ij}=\max(I_{ij}-b,0).$$
+$$
+w_{ij}=\max(I_{ij}-b,0).
+$$
 
 Then calculate:
 
-$$\hat{x}=\frac{\sum_{ij}x_{ij}w_{ij}}{\sum_{ij}w_{ij}},\qquad
-\hat{y}=\frac{\sum_{ij}y_{ij}w_{ij}}{\sum_{ij}w_{ij}}.$$
+$$
+\hat{x}=\frac{\sum_{ij}x_{ij}w_{ij}}{\sum_{ij}w_{ij}},\qquad
+\hat{y}=\frac{\sum_{ij}y_{ij}w_{ij}}{\sum_{ij}w_{ij}}.
+$$
 
 This can return fractional coordinates. However, clipping removes negative noise while retaining positive noise throughout the frame. Those extra weights can pull an off-centre spot's estimate towards the frame centre. A small fixed window or a different treatment of background could give different results.
 
@@ -79,7 +85,9 @@ One image shows one random outcome. We repeat each condition many times, changin
 
 For every successful estimate, define dx = estimated x - true x and dy = estimated y - true y. The radial error is sqrt(dx² + dy²). The root mean square position error is:
 
-$$\mathrm{RMSE}=\sqrt{\frac{1}{N}\sum_{k=1}^{N}(dx_k^2+dy_k^2)}.$$
+$$
+\mathrm{RMSE}=\sqrt{\frac{1}{N}\sum_{k=1}^{N}(dx_k^2+dy_k^2)}.
+$$
 
 This is not the same as mean radial error. For two radial errors of 0 and 5 pixels, the mean is 2.5 pixels but RMSE is sqrt(12.5), approximately 3.536 pixels. RMSE gives large errors more influence.
 
